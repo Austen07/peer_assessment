@@ -1,0 +1,45 @@
+<!--Button dropdown that lists assignment for a selected course to the user-->
+{% extends "CourseList.html" %}
+{% block head-title %}
+    Assignments
+{% endblock %}
+{% block change-course %}
+    {{ form.courseName|default:"Please select Course." }}
+{% endblock %}
+{% block body-content %}
+    {{ block.super }}
+    <p></p>
+    <div class="dropdown text-center">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+            {% block change-assignment %}
+                Select Assignment
+            {% endblock %}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-center scrollable-menu">
+            {% if form.createAssignmentOption %}
+                <li><a class="dropdown-item" name="direct"
+                       href="/showAssignmentOptions/3">Create Assignment</a></li>
+                <li class="divider"></li>
+            {% endif %}
+            {% for work in form.courseWork %}
+                <li class="text-center">
+                    <a class="dropdown-item" href="#" name="redirect">{{ work }}</a>
+                </li>
+            {% endfor %}
+            <li class="divider"></li>
+            <li><a class="dropdown-item" name="direct"
+                   href="/assignments?courseId={{ form.courseId }}&courseName={{ form.courseName }}">Select
+                Assignment</a></li>
+        </ul>
+    </div>
+    <script>
+        $(".dropdown-menu li a").click(function () {
+            $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+            $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+            if (this.name === "redirect")
+                window.location.href = "/showAssignmentOptions/2?assignmentName=" + $(this).text() + "&assignmentId=" + $.parseHTML(this.innerHTML)[0].value;
+        });
+    </script>
+{% endblock %}

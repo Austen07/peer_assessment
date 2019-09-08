@@ -1,0 +1,43 @@
+{% extends "bootstrap_ui/bootstrap-skeleton.html" %}
+{% block head-title %}
+Peer Grading
+{% endblock %}
+{% block body-content %}
+{% load static %}
+
+<!--css  -->
+<link rel="stylesheet" href="{% static 'css/oauth.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+<div class="container">
+  <nav>
+    <ul class="nav nav-pills float-right">
+      <li class="nav-item">
+        <a class="nav-link active" href="/about/">About</a>
+      </li>
+    </ul>
+  </nav>
+  <header class="header clearfix">
+    <h1 style="color: white;">Peer Grading</h1>
+  </header>
+
+  <body background="{% static 'assignment.jpg' %}"
+  style=" background-repeat:no-repeat; background-size:cover; background-attachment:fixed;
+  opacity:0.8;">
+</body>
+
+<main role="main">
+  <div class="jumbotron">
+    <h1 class="display-3">Peer Grading Portal</h1>
+    <p class="lead">Sign in to access all the facilities</p>
+    <p class="lead">
+      <a href="{% url 'portalLogin' %}?next=/" style="text-decoration: none !important">
+        <img id="signInButton" src="{% static 'loginbutton.png'%}"
+        onclick="document.getElementById('signInButton').src='{% static 'loginbutton.png'%}'">
+      </a>
+      <br>
+    </p>
+  </div>
+</main>
+</div>
+{% endblock %}

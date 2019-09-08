@@ -1,0 +1,40 @@
+<!--Used as a IFrame page to allow student grade each assignment-->
+{% extends "bootstrap_ui/bootstrap-skeleton.html" %}
+{% load filters %}
+{% block body-content %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Base.css' %}">
+    <form action="/gradeAssignment/" method="post">{% csrf_token %}
+        <input name="assId" value="{{ form.assId }}" type="hidden">
+        <table>
+            <tr><a href="{{ form.assignmentDetails.0 }}" target="_blank" style="font-size: large">Link To Assignment
+                Files</a></tr>
+            {% for hw in form.count %}
+                <tr>
+                    <td> Q{{ forloop.counter }}</td>
+                    <td>
+                        <input type="text" name="marks{{ forloop.counter }}" id="marks{{ forloop.counter }}"
+                               placeholder="[0-20]" required>
+                    </td>
+                    <td><label>
+                        <textarea name="justification{{ forloop.counter }}" rows="3"
+                                  cols="50" placeholder="Enter Justification for Q{{ forloop.counter }}"
+                                  id="justification{{ forloop.counter }}" required></textarea>
+                    </label></td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td><label><input class="btn btn-default" role="button" type="submit" value="Submit"/></label>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <script>
+        var marks = {{ form.assignmentDetails.1|getGrades}};
+        var justifications = {{ form.assignmentDetails.2|getGrades}};
+        for (var i = 0; i < marks.length; i++) {
+            document.getElementById("marks" + String(i + 1)).value = marks[i];
+            document.getElementById("justification" + String(i + 1)).value = justifications[i];
+        }
+    </script>
+{% endblock %}

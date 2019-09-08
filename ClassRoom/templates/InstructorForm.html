@@ -1,0 +1,239 @@
+<!--Page to be displayed to instructor that provides functionality of create, edit assignment details
+This page collects details w.r.t as assignment from instructor. It makes elements (other than dates) non-editable once saved.-->
+{% extends 'CourseWorkList.html' %}
+{% load filters %}
+{% block head-title %}
+    Instructor Form
+{% endblock %}
+{% block change-course %}
+    {{ form.courseName|default:"Please select Course" }}
+{% endblock %}
+{% block change-assignment %}
+    {{ form.assignmentName|default:"Please select Assignment" }}
+{% endblock %}
+{% block body-content %}
+    <style>
+        .alert {
+            display: none;
+            color: blanchedalmond;
+            font-size: medium;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+    {{ block.super }}
+    <p></p>
+    <div id="showAlertSuccess" class="alert alert-success alert-dismissable">
+        Data Stored Successfully
+        <a href="#" class="close" aria-label="close">&times;</a>
+    </div>
+    <div id="showAlertError" class="alert alert-danger alert-dismissable">
+        <a href="#" class="close" aria-label="close">&times;</a>
+    </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <a data-toggle="collapse" href="#collapseQuestions" style="color: white" class="accordion-toggle">
+                Fill the form below for Assignment - {{ form.assignmentName }}
+            </a>
+        </div>
+        <div id="collapseQuestions" class="panel-collapse collapse in">
+            <form action="/assignmentDetails/" class="panel-body" method="post" id="instructorForm">{% csrf_token %}
+                <table>
+                    <tr>
+                        <td>Name of the Assignment:</td>
+                        <td><label>
+                            <input type="text" name="assignmentName" id="assignmentName" class="form-control"
+                                   value="{{ form.assignmentName|default:"" }}" placeholder="Assignment" required>
+                            <span class="validity"></span>
+                        </label></td>
+                    </tr>
+                    <tr>
+                        <td>Link to Assignment:</td>
+                        <td><label>
+                            <input type="url" name="assignmentLink" id="assignmentLink" class="form-control"
+                                   value="{{ form.assignmentDetails.assignmentLink|default:"" }}"
+                                   placeholder="https://www.google.com/drive/" required>
+                            <span class="validity"></span>
+                        </label></td>
+                    </tr>
+                    <tr>
+                        <td>Enter Assignment Completion Deadline:</td>
+                        <td><label>
+                            <input type="datetime-local" id="assignmentDeadline" class="form-control"
+                                   value="{{ form.assignmentDetails.assignmentDeadline|default:"2018-01-01T23:59" }}"
+                                   name="assignmentDeadline" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
+                                   required>
+                            <span class="validity"></span>
+                        </label></td>
+
+                    </tr>
+                    <tr>
+                        <td>Enter Peer Grading Deadline:</td>
+                        <td>
+                            <label>
+                                <input type="datetime-local" id="peerGradingDeadline" class="form-control"
+                                       value="{{ form.assignmentDetails.peerGradingDeadline|default:"2018-01-01T23:59" }}"
+                                       name="peerGradingDeadline"
+                                       pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required>
+                                <span class="validity"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Enter Grade Challenge Deadline:</td>
+                        <td><label>
+                            <input type="datetime-local" id="challengeDeadline" class="form-control"
+                                   value="{{ form.assignmentDetails.challengeDeadline|default:"2018-01-01T23:59" }}"
+                                   name="challengeDeadline"
+                                   pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required>
+                            <span class="validity"></span>
+                        </label></td>
+                    </tr>
+                    <tr>
+                        <td>Enter Number of Peer Graders per Assignment:</td>
+                        <td><label>
+                            <input type="text" id="numberGraders" name="numberGraders" placeholder="[0-10]"
+                                   pattern="[0-9]{1}|1[0]" value="{{ form.assignmentDetails.numberGraders|default:"" }}"
+                                   class="form-control" required>
+                            <span class="validity"></span>
+                        </label></td>
+                    </tr>
+                    <tr>
+                        <td>Enter the Assignment Grade Percentage:</td>
+                        <td><label>
+                            <input type="text" id="assignmentPercentage" name="assignmentPercentage"
+                                   placeholder="[0-100]%" class="form-control"
+                                   value="{{ form.assignmentDetails.assignmentPercentage|default:"" }}"
+                                   pattern="[0-9]{2}|1[0]{2}|[0-9]{1}" required>
+                            <span class="validity"></span>
+                        </label></td>
+                    </tr>
+                    <tr>
+                        <td>Show students Individual or Aggregate Scores:</td>
+                        <td><label class="radio-inline">
+                            <input id="gradeTypeDisplay" type="radio" name="gradeTypeDisplay" value="individual">
+                            Individual<br>
+                        </label></td>
+                        <td><label class="radio-inline">
+                            <input id="gradeTypeDisplay" type="radio" name="gradeTypeDisplay" value="aggregate" checked>
+                            Aggregate<br>
+                        </label></td>
+                    </tr>
+                    <tr>
+                        <td>Enter the message for the students:</td>
+                        <td><label>
+                            <textarea name="message" id="message" style="display: inline-block;" rows="1"
+                                      class="form-control" cols="50"></textarea>
+                        </label></td>
+                    </tr>
+                    <tr>
+                        <td>Enter the number of questions:</td>
+                        <td><label>
+                            <input type="text" id="numberQuestions" name="numberQuestions" placeholder="[1-10]"
+                                   pattern="[0-9]{1}|1[0]" class="form-control"
+                                   value="{{ form.assignmentDetails.numberQuestions|default:"" }}" required>
+                            <span class="validity"></span>
+                        </label></td>
+                        <td><label>
+                            <button class="btn btn-default" id="numberQuestionButton" onclick="myFunction()"
+                                    type="button">Go
+                            </button>
+                        </label></td>
+                    </tr>
+                    <tr>
+                        <td><label class="Questions-Detail"></label></td>
+                    </tr>
+                    <tr>
+                        <td><label><input class="btn btn-default" id="SubmitButton" role="button" type="submit"
+                                          value="Submit" disabled/></label>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <button class="btn btn-default" id="showReport" onclick="reportLink()" type="button">
+                        show Report
+                    </button>
+                </td>
+                <td>
+                    <iframe id="showReportLink" frameborder="0" style="width:100%; height:100%;"></iframe>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        function reportLink() {
+            document.getElementById("showReportLink").src = "/generateReport/";
+        }
+
+        function myFunction() {
+            var numberOfQuestions = parseInt(document.getElementById('numberQuestions').value);
+            $(".Questions-Details").detach();
+            var lst = [];
+            lst.push("<table class=\"Questions-Details\">");
+            var marks = {% if form.assignmentDetails.numberQuestions %}
+                {{ form.assignmentDetails|getMarks:form.assignmentDetails.numberQuestions|default:"" }}
+                {% else %}""
+            {% endif %};
+            for (var i = 1; i <= numberOfQuestions; i++) {
+                var mark = marks[i - 1] ? "value= " + marks[i - 1] : "";
+                lst.push("<tr><td><label class=\"Questions-Details\">Q-" + i + "</label></td>\n " +
+                    "<td><input type=\"text\" name=\"q-" + i + "\" pattern=\"[0-9]{2}|[0-9]{1}\" " +
+                    mark + " placeholder=\"[1-99]\" class=\"Questions-Details\" required></text></td>\n " +
+                    "<span class=\"validity\"></span></tr>")
+            }
+            lst.push("</table>");
+            $(".Questions-Detail").append(lst.join(""));
+            document.getElementById("SubmitButton").disabled = false;
+        }
+
+        if ("{{ isSuccess }}" === "1")
+            $('#showAlertSuccess').show();
+        if ("{{ isSuccess }}" === "0") { <!--Store data error-->
+            $('#showAlertError').text('Error in storing data');
+            $('#showAlertError').show();
+        }
+        if ("{{ isSuccess }}" === "4") { <!--Fetch data error-->
+            $("#instructorForm :input").prop("disabled", true);
+            $('#showAlertError').text('Error in fetching data. Try again later');
+            $('#showAlertError').show();
+        }
+        $('.alert .close').on('click', function () {
+            $(this).parent().hide();
+        });
+
+        if ("{{ form.assignmentName }}" !== "")
+            document.getElementById("assignmentName").readOnly = true;
+        if ("{{ form.assignmentDetails.assignmentLink }}" !== "")
+            document.getElementById("assignmentLink").readOnly = true;
+        if ("{{ form.assignmentDetails.numberQuestions }}" !== "") {
+            document.getElementById("numberQuestions").readOnly = true;
+            document.getElementById("numberQuestionButton").click();
+            document.getElementById("numberQuestionButton").disabled = true;
+            var es = document.getElementsByClassName("Questions-Details");
+            for (var i = 0; i < es.length; i++)
+                es[i].readOnly = true;
+        }
+        if ("{{ form.assignmentDetails.assignmentPercentage }}" !== "") {
+            document.getElementById("assignmentPercentage").readOnly = true;
+        }
+        if ("{{ form.assignmentDetails.numberGraders }}" !== "") {
+            document.getElementById("numberGraders").readOnly = true;
+        }
+        if ("{{ form.assignmentDetails.message }}" !== "") {
+            document.getElementById("message").defaultValue = "{{ form.assignmentDetails.message }}";
+            document.getElementById("message").readOnly = true;
+        }
+        if ("{{ form.assignmentDetails.gradeTypeDisplay }}" !== "") {
+            document.querySelector("input[value='{{ form.assignmentDetails.gradeTypeDisplay }}']").checked = true;
+            $(':radio:not(:checked)').attr('disabled', true);
+        }
+    </script>
+{% endblock %}
+

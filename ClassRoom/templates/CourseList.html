@@ -1,0 +1,34 @@
+<!--Button dropdown that lists courses to the user-->
+{% extends "Base.html" %}
+{% block head-title %}
+    Select Course
+{% endblock %}
+{% block body-content %}
+    {{ block.super }}
+    <div class="dropdown text-center">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+            {% block change-course %}
+                Select Course
+            {% endblock %}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-center">
+            {% for course in form.courseList %}
+                <li>
+                    <a class="dropdown-item" href="#" name="redirect">{{ course }}</a>
+                </li>
+            {% endfor %}
+            <li class="divider"></li>
+            <li><a class="dropdown-item" href="/courses" name="direct">Select Course</a></li>
+        </ul>
+    </div>
+    <script>
+        $(".dropdown-menu li a").click(function () {
+            $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+            $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+            if (this.name === "redirect")
+                window.location.href = "/assignments?courseId=" + $.parseHTML(this.innerHTML)[0].value + "&courseName=" + $(this).text();
+        });
+    </script>
+{% endblock %}

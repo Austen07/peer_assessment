@@ -1,0 +1,15 @@
+<!--Main file that is extended by others. Contains Nav-bar with Logout-->
+{% extends "bootstrap_ui/bootstrap-skeleton.html" %}
+{% block body-content %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Base.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
+    <nav class="navbar">
+        <div class="container-fluid">
+            <a href="/courses" class="navbar-brand" style="color: grey">Peer Grading</a>
+            <ul id="nav-mobile" class="nav navbar-nav navbar-right">
+                <li><a href="/auth/account/logout">Log out</a></li>
+            </ul>
+        </div>
+    </nav>
+{% endblock %}
